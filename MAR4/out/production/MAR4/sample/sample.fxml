@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Button layoutX="263.0" layoutY="98.0" mnemonicParsing="false" onAction="#generate" text="Generate" />
       <TextField fx:id="params" layoutX="300.0" layoutY="26.0" />
       <TextField fx:id="limits" layoutX="300.0" layoutY="61.0" />
-      <Label layoutX="196.0" layoutY="30.0" text="Parameters count" />
-      <Label layoutX="225.0" layoutY="65.0" text="Limits count" />
+      <Label layoutX="187.0" layoutY="30.0" text="Parameters count" />
+      <Label layoutX="221.0" layoutY="65.0" text="Limits count" />
       <Button layoutX="263.0" layoutY="359.0" mnemonicParsing="false" onAction="#calculate" text="Calculate" />
-      <GridPane fx:id="systemGrid" layoutX="37.0" layoutY="185.0" prefHeight="166.0" prefWidth="513.0">
+      <GridPane fx:id="systemGrid" layoutX="37.0" layoutY="185.0" prefHeight="166.0" prefWidth="467.0">
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <GridPane fx:id="functionGrid" layoutX="111.0" layoutY="135.0" prefHeight="30.0" prefWidth="467.0">
+      <GridPane fx:id="functionGrid" layoutX="111.0" layoutY="135.0" prefHeight="30.0" prefWidth="482.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -30,5 +30,10 @@
         </rowConstraints>
       </GridPane>
       <Label fx:id="functionLabel" layoutX="63.0" layoutY="142.0" opacity="0.0" text="Fuction" />
+      <GridPane fx:id="resultGrid" layoutX="508.0" layoutY="192.0" prefHeight="150.0" prefWidth="96.0">
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
    </children>
 </Pane>

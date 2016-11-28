@@ -7,8 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-import java.util.Arrays;
-
 public class Controller
 {
     @FXML
@@ -21,14 +19,11 @@ public class Controller
     TextField limits;
     @FXML
     Label functionLabel;
+    @FXML
+    GridPane resultGrid;
 
     TextField paramsFields[], limitsFields[][];
     ComboBox<String> boxes[];
-
-    @FXML
-    public void initialize()
-    {
-    }
 
     @FXML
     public void generate()
@@ -45,7 +40,7 @@ public class Controller
         limitsFields = new TextField[limitsCount][paramsCount + 1];
         boxes = new ComboBox[limitsCount];
 
-        functionGrid.setPrefWidth(paramsCount * 60);
+        functionGrid.setPrefWidth(paramsCount * 70);
         systemGrid.setPrefHeight(limitsCount * 27);
 
         for (int i = 0; i < limitsCount; i++) {
@@ -59,15 +54,15 @@ public class Controller
                     functionGrid.add(x, j + 1, 0);
 
                     TextField param = new TextField();
-                    param.setMinWidth(40);
-                    param.setMaxWidth(40);
-                    param.setPrefWidth(40);
+                    param.setMinWidth(50);
+                    param.setMaxWidth(50);
+                    param.setPrefWidth(50);
                     functionGrid.add(param, j, 0);
                     paramsFields[j / 2] = param;
                 }
 
                 TextField systemParam = new TextField();
-                systemParam.setMaxWidth(30);
+                systemParam.setMaxWidth(50);
                 if (j < paramsCount * 2) {
                     Label x = new Label("X" + (j / 2 + 1));
                     x.setMinWidth(30);
@@ -106,9 +101,6 @@ public class Controller
                     systemGrid.add(systemParam, j + 1, i);
                     boxes[i] = box;
                 }
-
-
-
                 limitsFields[i][j / 2] = systemParam;
 
             }
@@ -118,25 +110,31 @@ public class Controller
     @FXML
     public void calculate()
     {
-        double params[] = new double[paramsFields.length];
-        double limits[][] = new double[limitsFields.length][limitsFields[0].length];
+        resultGrid.getChildren().clear();
+        double limits[][] = new double[limitsFields.length + 1][limitsFields[0].length];
         boolean sign[] = new boolean[limitsFields.length];
 
-        for (int i = 0; i < params.length; i++)
+        for (int i = 0; i < paramsFields.length; i++)
         {
             try {
-                params[i] = Double.parseDouble(paramsFields[i].getText());
+                limits[limits.length - 1][i + 1] = -1.0 * Double.parseDouble(paramsFields[i].getText());
                 paramsFields[i].setStyle("");
             } catch (Exception e) {
                 paramsFields[i].setStyle("-fx-background-color: red");
             }
         }
-        for (int i = 0; i < limits.length; i++)
+        limits[limits.length - 1][0] = 0.0;
+
+        for (int i = 0; i < limitsFields.length; i++)
         {
-            for (int j = 0; j < limits[i].length; j++)
+            for (int j = 0; j < limitsFields[i].length; j++)
             {
                 try {
-                    limits[i][j] = Double.parseDouble(limitsFields[i][j].getText());
+                    if (j < limitsFields[i].length - 1) {
+                        limits[i][j + 1] = Double.parseDouble(limitsFields[i][j].getText());
+                    } else {
+                        limits[i][0] = Double.parseDouble(limitsFields[i][j].getText());
+                    }
                     limitsFields[i][j].setStyle("");
                 } catch (Exception e) {
                     limitsFields[i][j].setStyle("-fx-background-color: red");
@@ -150,65 +148,27 @@ public class Controller
             }
         }
 
-        int choosenColumn = -1, choosenRow = -1;
-
-        for (double i = 0, max = 0; i < params.length; i++)
+        for (double l[] : limits)
         {
-            if (Math.abs(params[(int)i]) > max)
+            for (double ll : l)
             {
-                max = Math.abs(params[(int)i]);
-                choosenColumn = (int)i;
+                System.out.print(ll + "  ");
             }
+            System.out.println();
         }
-        if (choosenColumn > -1)
+
+        double[] result;
+        Model s = new Model(limits);
+        result = s.Calculate();
+
+        for (int i = 0; i < result.length - 1; i++)
         {
-            double max = 0;
-            for (int i = 0; i < limits.length; i++)
-            {
-                double div = limits[i][limits[i].length - 1] * 1.0 / limits[i][choosenColumn];
-                if (Math.abs(div) > max)
-                {
-                    choosenRow = i;
-                    max = Math.abs(div);
-                }
-            }
+            Label x = new Label("X" + (i + 1) + " = ");
+            x.setPrefWidth(40);
+            x.setMinWidth(40);
+            resultGrid.add(x, 0, i);
+            resultGrid.add(new TextField("" + result[i]), 1, i);
         }
 
-        if (choosenRow > -1 && choosenColumn > -1) {
-
-            limitsFields[choosenRow][choosenColumn].setStyle("-fx-background-color: green");
-
-            double paramsCopy[] = new double[paramsFields.length];
-            double limitsCopy[][] = new double[limitsFields.length][limitsFields[0].length];
-            paramsCopy[choosenColumn] = params[choosenColumn] / limits[choosenRow][choosenColumn];
-            for (int i = 0; i < limits.length; i++) {
-                if (i != choosenRow) {
-                    limitsCopy[i][choosenColumn] = limits[i][choosenColumn] / limits[choosenRow][choosenColumn];
-                } else {
-                    limitsCopy[i][choosenColumn] = 1.0 / limits[choosenRow][choosenColumn];
-                }
-            }
-            for (int i = 0; i < limits.length; i++) {
-                if (i != choosenRow) {
-                    for (int j = 0; j < limits[i].length; j++) {
-                        if (j != choosenColumn) {
-                            limitsCopy[i][j] = (limits[i][j] * limits[choosenRow][choosenColumn] - limits[choosenRow][j] * limits[i][choosenColumn]) / limits[choosenRow][choosenColumn];
-                        }
-                    }
-                }
-            }
-
-
-            for (int i = 0; i < params.length; i++) {
-                paramsFields[i].setText((paramsCopy[i] + "").substring(0, 3));
-            }
-            for (int i = 0; i < limits.length; i++) {
-                for (int j = 0; j < limitsCopy[i].length; j++) {
-                    limitsFields[i][j].setText((limitsCopy[i][j] + "").substring(0, 3));
-                }
-            }
-        } else {
-
-        }
     }
 }
