@@ -141,10 +141,21 @@ public class Controller
                 }
             }
             try {
-                sign[i] = boxes[i].getValue().equalsIgnoreCase(">");
+                sign[i] = boxes[i].getValue().equalsIgnoreCase("<");
                 boxes[i].setStyle("");
             } catch (Exception e) {
                 boxes[i].setStyle("-fx-background-color: red");
+            }
+        }
+        
+        for (int i = 0; i < limits.length - 1; i++)
+        {
+            if (!sign[i])
+            {
+                for (int j = 0; j < limits[i].length; j++)
+                {
+                    limits[i][j] *= -1.0;
+                }
             }
         }
 
